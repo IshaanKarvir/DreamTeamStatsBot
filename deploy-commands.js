@@ -24,6 +24,24 @@ const commands = [
             }
         ]
     },
+    {
+        name: 'matchhistory',
+        description: 'Get summoner information and match history using PUUID approach',
+        options: [
+            {
+                name: 'gamename',
+                description: 'The game name (e.g., Faker)',
+                type: 3, // STRING type
+                required: true
+            },
+            {
+                name: 'tagline',
+                description: 'The tag line (e.g., NA1)',
+                type: 3, // STRING type
+                required: true
+            }
+        ]
+    },
 ];
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);
