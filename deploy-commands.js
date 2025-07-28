@@ -42,6 +42,10 @@ const commands = [
             }
         ]
     },
+    {
+        name: 'dreamteamstats',
+        description: 'Get team statistics for hardcoded player list since July 22nd',
+    },
 ];
 
 const rest = new REST().setToken(process.env.DISCORD_TOKEN);

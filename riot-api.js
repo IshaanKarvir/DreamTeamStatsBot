@@ -163,6 +163,50 @@ class RiotAPI {
         }
     }
 
+    // Get matches since a specific date with pagination
+    async getMatchesSinceDate(puuid, startTime) {
+        try {
+            const matchBaseURL = 'https://americas.api.riotgames.com';
+            let allMatches = [];
+            let startIndex = 0;
+            const count = 100; // Maximum allowed per request
+            
+            while (true) {
+                const response = await axios.get(`${matchBaseURL}/lol/match/v5/matches/by-puuid/${puuid}/ids?startTime=${startTime}&start=${startIndex}&count=${count}`, {
+                    headers: {
+                        'X-Riot-Token': this.apiKey
+                    }
+                });
+                
+                const matches = response.data;
+                allMatches = allMatches.concat(matches);
+                
+                // If we got less than the maximum count, we've reached the end
+                if (matches.length < count) {
+                    break;
+                }
+                
+                startIndex += count;
+                
+                // Add a small delay to avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            return allMatches;
+        } catch (error) {
+            if (error.response) {
+                if (error.response.status === 404) {
+                    return []; // No matches found
+                } else if (error.response.status === 403) {
+                    throw new Error('Invalid API key');
+                } else if (error.response.status === 429) {
+                    throw new Error('Rate limit exceeded');
+                }
+            }
+            throw new Error('Failed to fetch match data');
+        }
+    }
+
     // Get detailed match information
     async getMatch(matchId) {
         try {
